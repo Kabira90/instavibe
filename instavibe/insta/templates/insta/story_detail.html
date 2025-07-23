@@ -1,0 +1,34 @@
+{% extends 'insta/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="text-center bg-dark p-4 rounded" style="max-width: 400px; width: 100%;">
+        
+        <!-- Profile Image + Username + Time (All Clickable) -->
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <a href="{% url 'user_profile' story.user.username %}">
+                <img src="{{ story.user.profile.avatar.url }}" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+            </a>
+            <a href="{% url 'user_profile' story.user.username %}" class="text-white fw-bold text-decoration-none">
+                {{ story.user.username }}
+            </a>
+            <small class="text-muted">• {{ story.created_at|timesince }} ago</small>
+        </div>
+
+        <!-- Story Image (Clickable to user profile or post list) -->
+        <a href="{% url 'user_profile' story.user.username %}">
+            <img src="{{ story.image.url }}" alt="Story" class="img-fluid rounded mb-3" style="max-height: 400px; object-fit: contain;">
+        </a>
+
+        <!-- Caption (Also clickable to user profile) -->
+        {% if story.caption %}
+            <a href="{% url 'user_profile' story.user.username %}" class="text-light text-decoration-none">
+                <p>{{ story.caption }}</p>
+            </a>
+        {% endif %}
+
+        <!-- Back Button -->
+        <a href="{% url 'home' %}" class="btn btn-outline-light btn-sm mt-2">Back</a>
+    </div>
+</div>
+{% endblock %}

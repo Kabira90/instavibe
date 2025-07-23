@@ -1,0 +1,47 @@
+{% extends 'insta/base.html' %}
+{% load static %}
+
+{% block title %}{{ highlight.title }} - Highlight{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- 🔹 Highlight Title -->
+    <h4 class="text-center mb-4">{{ highlight.title }}</h4>
+
+    <!-- 🔸 Highlight Stories -->
+    <div class="row justify-content-center">
+        {% for story in highlight.stories.all %}
+            <div class="col-md-6 mb-4 text-center">
+
+                <!-- 🖼️ Image Story -->
+                {% if story.image %}
+                    <img src="{{ story.image.url }}" class="img-fluid rounded shadow"
+                         style="max-height: 500px; object-fit: contain;" alt="Story">
+                {% endif %}
+
+                <!-- 🎥 Video Story -->
+                {% if story.video %}
+                    <video controls class="img-fluid rounded shadow"
+                           style="max-height: 500px; object-fit: contain;">
+                        <source src="{{ story.video.url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% endif %}
+
+                <p class="mt-2 text-muted small">
+                    {{ story.created_at|date:"F j, Y, g:i a" }}
+                </p>
+            </div>
+        {% empty %}
+            <p class="text-center text-muted">No stories in this highlight.</p>
+        {% endfor %}
+    </div>
+
+    <!-- 🔙 Back to profile -->
+    <div class="text-center mt-4">
+        <a href="{% url 'user_profile' highlight.user.username %}" class="btn btn-secondary">Back to Profile</a>
+    </div>
+
+</div>
+{% endblock %}

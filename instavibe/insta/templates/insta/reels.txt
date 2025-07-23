@@ -1,0 +1,78 @@
+{% extends 'insta/base.html' %}
+{% block title %}Reels{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        overflow: hidden;
+        margin: 0;
+    }
+    .reel-container {
+        height: 100vh;
+        overflow-y: scroll;
+        scroll-snap-type: y mandatory;
+    }
+    .reel {
+        scroll-snap-align: start;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    video {
+        max-height: 90vh;
+        width: auto;
+        border-radius: 12px;
+        background-color: black;
+    }
+</style>
+
+<div class="reel-container" id="reelContainer">
+    {% for post in reels %}
+        {% if post.video %}
+            <div class="reel">
+                <video src="{{ post.video.url }}" controls></video>
+            </div>
+        {% endif %}
+    {% empty %}
+        <p class="text-muted text-center mt-5">No reels available.</p>
+    {% endfor %}
+</div>
+
+<script>
+    const container = document.getElementById('reelContainer');
+    const reels = container.querySelectorAll('video');
+    let currentIndex = 0;
+
+    function playReel(index) {
+        reels.forEach((video, i) => {
+            if (i === index) {
+                video.play();
+                video.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                video.pause();
+                video.currentTime = 0;
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === "ArrowDown") {
+            if (currentIndex < reels.length - 1) {
+                currentIndex++;
+                playReel(currentIndex);
+            }
+        } else if (e.key === "ArrowUp") {
+            if (currentIndex > 0) {
+                currentIndex--;
+                playReel(currentIndex);
+            }
+        }
+    });
+
+    // Auto-play the first reel on page load
+    window.onload = () => {
+        playReel(0);
+    };
+</script>
+{% endblock %}

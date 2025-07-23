@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Home - InstaVibe{% endblock %}
+
+{% block content %}
+<h2>Recent Posts</h2>
+{% for post in posts %}
+    <div style="text-align: center; margin-bottom: 30px;">
+        <img src="{{ post.image.url }}" style="max-width: 90%; height: auto; border-radius: 10px;">
+        <p><strong>{{ post.user.username }}</strong></p>
+        <p>{{ post.caption }}</p>
+        <hr>
+    </div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'insta/base.html' %}
+{% block content %}
+<div class="container">
+    <h3>Notifications</h3>
+    <ul class="list-group">
+        {% for n in notifications %}
+            <li class="list-group-item">
+                {% if n.type == 'like' %}
+                    ❤️ <strong>{{ n.sender.username }}</strong> liked your <a href="{% url 'post_detail' n.post.id %}">post</a>.
+                {% elif n.type == 'comment' %}
+                    💬 <strong>{{ n.sender.username }}</strong> commented on your <a href="{% url 'post_detail' n.post.id %}">post</a>.
+                {% elif n.type == 'follow' %}
+                    ➕ <strong>{{ n.sender.username }}</strong> followed you.
+                {% endif %}
+                <small class="text-muted float-end">{{ n.created_at|timesince }} ago</small>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No notifications yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'insta/base.html' %}
+
+{% block content %}
+
+<!-- 🟣 Stories Heading -->
+<h5 class="px-3 pt-3">Stories</h5>
+
+<!-- 🟡 Story Avatars Bar -->
+<div class="d-flex overflow-auto py-3 px-2 rounded mb-4 stories-bar" style="white-space: nowrap;">
+    {% for story in stories %}
+        <div class="text-center me-3" style="width: 80px;">
+            <a href="{% url 'story_detail' story.id %}" class="text-decoration-none">
+                <img src="{{ story.image.url }}" class="rounded-circle border"
+                     style="width: 60px; height: 60px; object-fit: cover;" alt="Story">
+                     <!-- <p class="small mt-1 text-truncate username-text dynamic-text" style="max-width: 80px;"> -->
+
+                <div class="small mt-1 text-truncate username-text dynamic-text" style="max-width: 80px;">
+                    {{ story.user.username }}
+                </div>
+            </a>
+        </div>
+    {% empty %}
+        <p>No stories yet.</p>
+    {% endfor %}
+</div>
+
+<!-- 🔵 Followed Profiles Horizontal Scroll -->
+{% if followed_profiles %}
+<div class="d-flex gap-3 px-3 pb-4 overflow-auto" style="white-space: nowrap;">
+    {% for profile in followed_profiles %}
+        <div class="text-center" style="min-width: 70px;">
+            <a href="{% url 'user_profile' profile.user.username %}">
+                <img src="{{ profile.avatar.url }}"
+                     class="rounded-circle border border-danger"
+                     width="60" height="60"
+                     alt="{{ profile.user.username }}">
+            </a>
+            <p class="small text-center text-truncate username-text" style="max-width: 70px;">
+                {{ profile.user.username }}
+            </p>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- 🟢 Posts Feed -->
+{% for post in posts %}
+    <div class="card mb-4 post-card">
+
+        <div class="card-body text-center">
+
+            <!-- 👤 User Avatar & Username (Clickable) -->
+            <a href="{% url 'user_profile' post.user.username %}" class="text-decoration-none">
+                <div class="d-flex align-items-center justify-content-center mb-2">
+                    <img src="{{ post.user.profile.avatar.url }}"
+                         style="margin-left: -356px; width: 40px; height: 40px; object-fit: cover; border-radius: 50%;
+                                border: 2px solid cyan;"
+                         alt="{{ post.user.username }}">
+                    <strong class="ms-2 username-text dynamic-text">{{ post.user.username }}</strong>
+                </div>
+            </a>
+
+            <!-- 🖼️ Post Image or Reel Video -->
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="img-fluid" style="width: 44%; max-height: 43%; object-fit: cover;" alt="Post Image">
+            {% elif post.video %}
+                <video muted controls class="img-fluid post-video" style="width: 40%; max-height: 27%; object-fit: cover;">
+                    <source src="{{ post.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            {% endif %}
+
+            <!-- 📝 Caption & Date -->
+            <p class="mt-2 post-caption">{{ post.caption }}</p>
+            <small class="post-date">Posted on: {{ post.created_at|date:"F j, Y, g:i a" }}</small>
+
+        </div>
+    </div>
+{% empty %}
+    <p class="text-center text-muted">No posts yet.</p>
+{% endfor %}
+
+<!-- ✅ Auto-play videos that are visible -->
+<script>
+    const videos = document.querySelectorAll("video.post-video");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const video = entry.target;
+            if (entry.isIntersecting) {
+                video.play().catch(err => {});
+            } else {
+                video.pause();
+                video.currentTime = 0;
+            }
+        });
+    }, {
+        threshold: 0.6
+    });
+
+    videos.forEach(video => {
+        observer.observe(video);
+    });
+</script>
+
+<style>
+    /* These styles will be controlled by the body's class (light-mode or dark-mode) */
+
+    body.dark-mode .post-card {
+        background-color: black;
+        color: #fff;
+    }
+
+    body.light-mode .post-card {
+        background-color: #fff;
+        color: #000;
+    }
+
+    body.dark-mode .username-text {
+        color: #fff;
+    }
+
+    body.light-mode .username-text {
+        color: #000;
+    }
+
+    body.dark-mode .post-caption,
+    body.dark-mode .post-date {
+        color: #ddd;
+    }
+
+    body.light-mode .post-caption,
+    body.light-mode .post-date {
+        color:  #000;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'insta/base.html' %}
+
+{% block content %}
+<div class="container mt-4 text-white">
+    <h3>Results for "{{ query }}"</h3>
+    {% if users %}
+        <ul class="list-group">
+            {% for user in users %}
+                <li class="list-group-item bg-dark text-white">
+                    <a href="{% url 'user_profile' user.username %}" class="text-white">{{ user.username }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'insta/base.html' %}
+{% block title %}Reels{% endblock %}
+
+{% block content %}
+
+<!-- 🔄 Reels Full-Screen Scrollable Container -->
+<div class="vh-100 overflow-hidden m-0 p-0">
+    <div class="h-100 overflow-auto" id="reelContainer" style="scroll-snap-type: y mandatory;">
+
+        {% for post in reels %}
+            {% if post.video %}
+                <div class="d-flex justify-content-center align-items-center vh-100" style="scroll-snap-align: start;">
+                    <video src="{{ post.video.url }}"
+                           class="bg-black rounded"
+                           style="max-height: 90vh; width: auto;" 
+                           controls>
+                    </video>
+                </div>
+            {% endif %}
+        {% empty %}
+            <p class="text-muted text-center mt-5">No reels available.</p>
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- 🔁 Reel Scroll + Play Script -->
+<script>
+    const container = document.getElementById('reelContainer');
+    const reels = container.querySelectorAll('video');
+    let currentIndex = 0;
+
+    function playReel(index) {
+        reels.forEach((video, i) => {
+            if (i === index) {
+                video.play();
+                video.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                video.pause();
+                video.currentTime = 0;
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === "ArrowDown" && currentIndex < reels.length - 1) {
+            currentIndex++;
+            playReel(currentIndex);
+        } else if (e.key === "ArrowUp" && currentIndex > 0) {
+            currentIndex--;
+            playReel(currentIndex);
+        }
+    });
+
+    window.onload = () => {
+        playReel(0);
+    };
+</script>
+
+{% endblock %}

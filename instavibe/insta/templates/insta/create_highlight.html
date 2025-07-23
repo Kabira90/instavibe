@@ -1,0 +1,15 @@
+{% extends 'insta/base.html' %}
+{% load static %}
+
+{% block title %}Create Highlight{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>Create New Highlight</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Create Highlight</button>
+    </form>
+</div>
+{% endblock %}

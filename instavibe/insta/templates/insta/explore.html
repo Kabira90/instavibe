@@ -1,0 +1,23 @@
+{% extends 'insta/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h3 class="mb-4">Explore</h3>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2">
+        {% for post in posts %}
+            <div class="col">
+                <a href="{% url 'post_detail' post.id %}">
+                    {% if post.image and post.image.url %}
+                        <img src="{{ post.image.url }}" class="img-fluid rounded" style="height: 200px; width: 100%; object-fit: cover;">
+                    {% elif post.video and post.video.url %}
+                        <video class="img-fluid rounded" style="height: 200px; width: 100%; object-fit: cover;" autoplay muted loop>
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

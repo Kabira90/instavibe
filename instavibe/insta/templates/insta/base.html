@@ -1,0 +1,156 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}InstaVibe{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'images/instavibe.png' %}" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="position-fixed top-0 start-0 h-100 border-end d-flex flex-column justify-content-between px-0" style="width: 230px;">
+
+    <!-- Top scrollable section -->
+    <div class="flex-grow-1 overflow-auto">
+
+        <!-- Logo -->
+        <div class="text-center mb-4 pt-3" style="font-family: 'Poppins', sans-serif;">
+            <a href="{% url 'home' %}" class="text-decoration-none fw-bold fs-4 d-inline-block"
+               style="background: linear-gradient(90deg, #ff6ec4, #7873f5);
+                      background-clip: text; -webkit-background-clip: text;
+                      color: transparent; -webkit-text-fill-color: transparent;">
+                InstaVibe
+            </a>
+        </div>
+
+        <!-- Navigation Links -->
+        <a href="{% url 'home' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-house-door"></i> Home</a>
+        <a href="{% url 'search_users' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-search"></i> Search</a>
+
+        <form method="GET" action="{% url 'search_users' %}" class="px-3 mb-3">
+            <input type="text" name="q" class="form-control form-control-sm mt-2" placeholder="Search users...">
+        </form>
+
+        <a href="{% url 'explore' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-compass"></i> Explore</a>
+        <a href="{% url 'reels' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-camera-reels"></i> Reels</a>
+        <a href="{% url 'inbox' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-chat"></i> Messages</a>
+        <a href="{% url 'notifications' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-heart"></i> Notifications</a>
+        <a href="{% url 'create_post' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-plus-square"></i> Create</a>
+        <a href="{% url 'add_story' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-plus-circle"></i> Add Story</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'user_profile' user.username %}" class="px-3 py-2 d-flex align-items-center text-decoration-none text-reset">
+                <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle me-2" width="30" height="30">
+                Profile
+            </a>
+
+            <!-- Stories -->
+            <div class="d-flex gap-3 px-3 py-2 overflow-auto" style="scrollbar-width: none; -ms-overflow-style: none;">
+                {% for user in following_users %}
+                    <div class="text-center">
+                        <a href="{% url 'profile' user.user.username %}">
+                            <img src="{{ user.profile_picture.url }}" class="rounded-circle border border-danger" width="60" height="60" alt="{{ user.user.username }}">
+                        </a>
+                        <p class="small text-reset">{{ user.user.username }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Logout -->
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn text-start w-100 px-3 py-2 text-reset"><i class="bi bi-box-arrow-right"></i> Logout</button>
+            </form>
+        {% else %}
+            <div class="text-muted px-3 py-2"><i class="bi bi-person-circle"></i> Logged Out</div>
+            <a href="{% url 'login' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+            <a href="{% url 'signup' %}" class="px-3 py-2 d-block text-decoration-none text-reset"><i class="bi bi-person-plus"></i> Signup</a>
+        {% endif %}
+    </div>
+
+    <!-- Theme toggle button -->
+    <div class="text-center mb-3">
+        <div class="border border-info rounded px-3 py-2 text-info fw-medium small" role="button" onclick="toggleMode()">
+            <i class="bi bi-circle-half"></i> Toggle Theme
+        </div>
+    </div>
+
+</div>
+
+<!-- Main Content -->
+<div id="mainContent" class="p-4 bg-white text-dark" style="margin-left: 230px;">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ 
+<script>
+    function toggleMode() {
+        const body = document.body;
+        const main = document.getElementById("mainContent");
+        const cards = document.querySelectorAll(".post-card");
+        const texts = document.querySelectorAll(".dynamic-text");  // ✅ NEW
+
+        const isDark = body.classList.contains('bg-dark');
+
+        body.classList.toggle('bg-dark', !isDark);
+        body.classList.toggle('text-white', !isDark);
+        body.classList.toggle('bg-white', isDark);
+        body.classList.toggle('text-dark', isDark);
+
+        main.classList.toggle('bg-dark', !isDark);
+        main.classList.toggle('text-white', !isDark);
+        main.classList.toggle('bg-white', isDark);
+        main.classList.toggle('text-dark', isDark);
+
+        cards.forEach(card => {
+            card.classList.toggle('bg-dark', !isDark);
+            card.classList.toggle('text-white', !isDark);
+            card.classList.toggle('bg-white', isDark);
+            card.classList.toggle('text-dark', isDark);
+        });
+
+        // ✅ Toggle text color of usernames and captions
+        texts.forEach(text => {
+            text.classList.toggle('text-white', !isDark);
+            text.classList.toggle('text-dark', isDark);
+        });
+
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    }
+
+    (function () {
+        const theme = localStorage.getItem('theme') || 'dark';
+        const body = document.body;
+        const main = document.getElementById("mainContent");
+        const cards = document.querySelectorAll(".post-card");
+        const texts = document.querySelectorAll(".dynamic-text");
+
+        if (theme === 'dark') {
+            body.classList.add('bg-dark', 'text-white');
+            main.classList.add('bg-dark', 'text-white');
+            cards.forEach(card => card.classList.add('bg-dark', 'text-white'));
+            texts.forEach(text => text.classList.add('text-white'));
+        } else {
+            body.classList.add('bg-white', 'text-dark');
+            main.classList.add('bg-white', 'text-dark');
+            cards.forEach(card => card.classList.add('bg-white', 'text-dark'));
+            texts.forEach(text => text.classList.add('text-dark'));
+        }
+    })();
+</script>
+
+
+
+</body>
+</html>
