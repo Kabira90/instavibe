@@ -83,11 +83,11 @@ If you're a client or startup looking for:
 
 ## 🧑‍🎓 About Me
 
-- **Name:** Abid Ali  
-- **Role:** Django Developer  
-- **Country:** Pakistan 🇵🇰  
-- **Freelancing:** [Fiverr Profile](https://www.fiverr.com/users/abidali977/)  
-- **GitHub:** [Kabira90](https://github.com/Kabira90)
+- Name: Abid Ali  
+- Role: Django Developer  
+- Country: Pakistan 🇵🇰  
+- Freelancing: [Fiverr Profile](https://www.fiverr.com/users/abidali977/)  
+- GitHub: [Kabira90](https://github.com/Kabira90)
 
 
 ## 🖼️ Screenshots
