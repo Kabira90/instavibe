@@ -32,11 +32,7 @@ Welcome to **InstaVibe**, a modern and responsive social media platform develope
 
 ---
 
-## 🖼️ Screenshots
 
-*(Add screenshots of homepage, user profile, and post page here)*
-
----
 
 ## ⚙️ How to Run Locally
 
